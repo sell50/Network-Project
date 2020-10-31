@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client 
+public class JcClient
 {
 
 	//Needed Objects
@@ -23,7 +23,7 @@ public class Client
 	 * 				connect and allow messages to be sent back and 
 	 * 				fourth between the Client and Server
 	 */
-	Client() throws Exception
+	JcClient() throws Exception
 	{
 		//Make Connection
 		CSC();
@@ -134,7 +134,7 @@ public class Client
 	 */
 	public static void main(String Args[]) throws Exception
 	{
-		Client client = new Client();
+		JcClient client = new JcClient();
 	}
 	
 }
