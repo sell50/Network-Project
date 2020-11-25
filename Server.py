@@ -1,6 +1,7 @@
 import socket
 import sys
 import os
+import pickle
 from _thread import *
 from JobList import *
 
@@ -55,10 +56,10 @@ class Server(object):
             if roleSelection.upper() == 'EXIT':
                 sys.exit(0)
 
-            reply = 'Server Says: ' + data.decode('utf-8')
-            if not data:
-                break
-            connection.sendall(str.encode(reply))
+            #Base Condition
+            if roleSelection.upper() != 'JC' and roleSelection.upper() != 'JS' and roleSelection.upper() != 'EXIT':
+                connection.send(bytes("Not a Valid Input...Try Again", 'UTF-8'))
+
         connection.close()
 
 
@@ -93,6 +94,16 @@ class Server(object):
                 connection.send(bytes("Not a Valid Input...Try Again", 'UTF-8'))
 
     def FoundJobCreator(self, connection):
+
+        """
+        :Description: This Function will Run when the Client identifies themselves as a Job Creator.
+                        It will then send the Client a list of options to choose from, when one of these
+                        choices are picked it will run another function to fulfil the job requested from
+                        the Job Creator Client
+        :param connection: This is the Socket which is used to send and receive message from the Client
+        :return: VOID
+        """
+
         # Sending Job Creator Options to Client
         connection.send(bytes("1.View Jobs\n2.Create Job\n3.Exit\n", 'UTF-8'))
 
@@ -105,7 +116,7 @@ class Server(object):
             if optionSelection == '1':
 
                 print("Client Views Job")
-                connection.send(bytes("Viewing Jobs", 'UTF-8'))
+                self.jobListView(connection)
 
             # Create Job Condition
             if optionSelection == '2':
@@ -140,6 +151,22 @@ class Server(object):
 
         #Sending Job Creator Options to Client
         connection.send(bytes("1.View Jobs\n2.Create Job\n3.Exit\n", 'UTF-8'))
+
+    def jobListView(self, connection):
+
+        #Condition for No Jobs In Job List
+        if len(self.jobList.listofjobs) == 0:
+            connection.send(bytes("No Jobs Posted", 'UTF-8'))
+        else:
+
+            jobNum = 0
+
+            for obj in self.jobList.listofjobs:
+
+                connection.send(bytes(self.jobList.listofjobs[jobNum].FullJob, 'UTF-8'))
+
+                jobNum+=1
+
 
 if __name__ == "__main__":
     s = Server()

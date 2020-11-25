@@ -20,6 +20,7 @@ while True:
     #Displaying Message From Server
     print(in_data.decode())
 
+
     #Getting Message For Server
     out_data = input()
 
