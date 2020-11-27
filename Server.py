@@ -6,10 +6,14 @@ from JobList import *
 
 class Server(object):
     """
-    Tasks to Develop or Fix
-    -Viewing Joined Jobs (Job Seeker)
+    Assignment 3 Tasks to Develop or Fix
     -Write Target IP and/or Target Port to .txt (Job Creator)
     -Connect Group Members .py scripts
+
+    Wanted Tasks to Develop or Fix:
+    -Removing Job Seeker From a Job (Job Creator)
+    -Viewing Joined Jobs (Job Seeker)
+    -View Job History (Job Seeker)
 
     Bugs to Work Out:
     -After Certain Actions The Client Needs to Send Blank Space to Continue
