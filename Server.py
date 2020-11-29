@@ -7,7 +7,7 @@ from JobList import *
 class Server(object):
     """
     Assignment 3 Tasks to Develop or Fix
-    -Write Target IP and/or Target Port to .txt (Job Creator)
+    -Multiple Jobs Creates Conflict With Updating Active Seeker List
     -Connect Group Members .py scripts
 
     Wanted Tasks to Develop or Fix:
@@ -24,6 +24,8 @@ class Server(object):
     -Job Creators can Post Jobs
     -Job Seekers can Join Jobs
     -Job Creators and Job Seekers can View the Job List
+    -Job Creators can Send Target IP and Port
+    -Job Seekers can Obtain Target IP and Port
     -Job Creators can View Job Seeker List
     -Job Creators can Start The Job
     -Job Seekers can Complete The Job
@@ -38,6 +40,10 @@ class Server(object):
         self.jobList = JobList()
         self.jobCompletion = "Not Complete"
         self.activeJobsWithSeekers = []
+
+        #From Job Creator-->Server-->Job Seeker
+        self.targetIP = '1.1.1.1'
+        self.targetPort = 25565
 
         # Bind socket to port
         try:
@@ -93,7 +99,7 @@ class Server(object):
     def FoundJobSeeker(self, connection):
 
         # Sending Job Seeker Options
-        connection.send(pickle.dumps("1.View Jobs\n2.Exit\n"))
+        connection.send(pickle.dumps("Job Seeker Menu:\n1.View Jobs\n2.Exit\n"))
 
         while True:
             # Receiving Message From Client
@@ -110,14 +116,14 @@ class Server(object):
 
             # Base Case Condition
             if optionSelection != '1' and optionSelection != '2':
-                connection.send(pickle.dumps("Not a Valid Input...\n1.View Jobs\n2.Exit\n"))
+                connection.send(pickle.dumps("Job Seeker Menu:\n1.View Jobs\n2.Exit\n"))
 
     #FoundJobSeeker-->viewingMenuJS
     def viewingMenuJS(self, connection):
 
         self.jobListView(connection)
 
-        connection.send(pickle.dumps("1.Join Job\n2.Go Back"))
+        connection.send(pickle.dumps("Job Viewing Menu:\n1.Join Job\n2.Return to Job Seeker Menu"))
 
         while True:
             #Receiving Message From Client
@@ -130,7 +136,7 @@ class Server(object):
             elif optionSelection == 2:
                 self.FoundJobSeeker(connection)
             else:
-                connection.send(pickle.dumps("Not Valid Input...\n1.Join Job\n2.Go Back"))
+                connection.send(pickle.dumps("Job Viewing Menu:\n1.Join Job\n2.Return to Job Seeker Menu"))
 
     #FoundJobSeeker-->viewingMenuJS-->acceptJob
     def acceptJob(self, connection):
@@ -174,6 +180,15 @@ class Server(object):
                 else:
                     continue
 
+    #Used to Send The Targets IP and Port to Job Seeker
+    def sendTargetCredentials(self, connection, targetIP, targetPort):
+
+        connection.send(pickle.dumps("Target Credentials"))
+
+        connection.send(pickle.dumps(targetIP))
+
+        connection.send(pickle.dumps(targetPort))
+
     '''             
     JOB CREATOR FUNCTIONS 
     '''
@@ -190,7 +205,7 @@ class Server(object):
         """
 
         # Sending Job Creator Options to Client
-        connection.send(pickle.dumps("1.View Jobs\n2.Create Job\n3.Exit\n"))
+        connection.send(pickle.dumps("Job Creator Menu:\n1.View Jobs\n2.Create Job\n3.Exit\n"))
 
         while True:
 
@@ -209,7 +224,7 @@ class Server(object):
 
             # Exit Condition
             if optionSelection == '3':
-               sys.exit(0)
+               self.threadedClient(connection)
 
             # Base Case Condition
             if optionSelection != '1' and optionSelection != '2' and optionSelection != '3':
@@ -220,7 +235,7 @@ class Server(object):
 
         self.jobListView(connection)
 
-        connection.send(pickle.dumps("1.Start Job\n2.View Seekers\n2.Exit"))
+        connection.send(pickle.dumps("Job Viewing Menu:\n1.Start Job\n2.View Seekers\n3.Exit"))
 
         while True:
             #Receiving Message From Client
@@ -234,7 +249,7 @@ class Server(object):
             elif optionSelection == 3:
                 self.FoundJobCreator(connection)
             else:
-                connection.send(pickle.dumps("Not Valid Input...\n1.Start Job\n2.Exit"))
+                connection.send(pickle.dumps("Job Viewing Menu:\n1.Start Job\n2.View Seekers\n3.Exit"))
 
     #FoundJobCreator-->jobCreationItems
     def jobCreationItems(self, connection):
@@ -262,23 +277,28 @@ class Server(object):
         self.jobList.updateNumOfSeekers(jobSelection, True)
 
         if self.jobList.listofjobs[jobSelection].getNumOfSeekers() == "Job Started":
-            connection.send(pickle.dumps("Job Has Been Started\nPress Enter to Wait for Job Completion"))
+            connection.send(pickle.dumps("Job Has Been Started\nPress Enter To Go Back To Job Creator Menu"))
 
-            self.waitForCompletion(connection, jobSelection)
+            self.FoundJobCreator(connection)
 
         else:
-            connection.send(pickle.dumps("Job Must Have 0 Seekers to Start"))
+            connection.send(pickle.dumps("Job Must Have 0 Seekers to Start\nPress Enter To Go Back To Job Creator Menu"))
+            self.FoundJobCreator(connection)
 
-    #FoundJobCreator-->viewingMenuJC-->startJob-->waitForCompletion
-    def waitForCompletion(self, connection, jobSelection):
+    #Used to Get The Targets IP and Port From Job Creator (Inside def JobSelector(self, connection, jobNumber))
+    def getTargetCredentials(self, connection):
 
-        while self.jobList.listofjobs[jobSelection].getNumOfSeekers() == "Job Started":
+        connection.send(pickle.dumps("Enter The Target's IP Address"))
 
-            if self.jobCompletion == "Complete":
-                connection.send(pickle.dumps("Job Finished\nPress Enter To Go Back To Main Menu"))
-                self.FoundJobCreator(connection)
-            else:
-                continue
+        # Receiving Message From Client
+        data = connection.recv(2048)
+        self.targetIP = str(data.decode())
+
+        connection.send(pickle.dumps("Enter The Target's Port if Port Not Needed Enter 0"))
+
+        # Receiving Message From Client
+        data = connection.recv(2048)
+        self.targetPort = int(data.decode())
 
     '''             
     HELPER FUNCTIONS 
@@ -293,19 +313,19 @@ class Server(object):
         if jobNumber == 1:
             self.jobList.createIPOnlineDetectionJob(creatorName)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
         elif jobNumber == 2:
             self.jobList.createSubnetIPOnlineDetection(creatorName)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
         elif jobNumber == 3:
             self.jobList.specificPortStatusDetection(creatorName)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
         elif jobNumber == 4:
             self.jobList.allPortStatusDetection(creatorName)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
         elif jobNumber == 5:
             connection.send(pickle.dumps("Enter How Many Job Seekers Are Needed: "))
 
@@ -314,7 +334,7 @@ class Server(object):
 
             self.jobList.createICMPFloodAttackJob(creatorName, numOfSeekers)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
         elif jobNumber == 6:
             connection.send(pickle.dumps("Enter How Many Job Seekers Are Needed: "))
 
@@ -323,7 +343,7 @@ class Server(object):
 
             self.jobList.createTCPFloodAttackJob(creatorName, numOfSeekers)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
         elif jobNumber == 7:
             connection.send(pickle.dumps("Enter How Many Job Seekers Are Needed: "))
 
@@ -332,7 +352,7 @@ class Server(object):
 
             self.jobList.createUDPFloodAttackJob(creatorName, numOfSeekers)
 
-            connection.send(pickle.dumps("Job Has Been Created and Posted\nPress Enter to Continue"))
+            self.getTargetCredentials(connection)
 
     #Helper Method for View Lists
     def jobListView(self, connection):
@@ -352,7 +372,16 @@ class Server(object):
         data = connection.recv(2048)
         jobSelection = int(data.decode()) - 1
 
-        connection.send(pickle.dumps(self.activeJobsWithSeekers[0].getJobSeekerList()))
+        if len(self.activeJobsWithSeekers) == 0:
+            connection.send(pickle.dumps("No Active Job Seekers\nPress Enter to Return to Job Viewing Screen"))
+
+            #Client Must Send Empty Space To Obtain This Message
+            self.FoundJobCreator(connection)
+        else:
+            connection.send(pickle.dumps(self.activeJobsWithSeekers[jobSelection].getJobSeekerList()))
+
+            #Client Must Send Empty Space To Obtain This Message
+            self.FoundJobCreator(connection)
 
     #SeekerList Gets Appended
     def joinSeekerList(self, connection, jobNumber):
@@ -368,6 +397,14 @@ class Server(object):
 
         #Updating Server Specific Job Seeker List with Client Specific Job Seeker List
         self.activeJobsWithSeekers.append(self.jobList.listofjobs[jobNumber])
+
+    def matchJobs(self, jobNumber):
+        count = -1
+        for job in self.jobList.listofjobs:
+            count+=1
+            if job.getFullJob() == self.activeJobsWithSeekers[count].getFullJob():
+                print()
+
 
 if __name__ == "__main__":
     s = Server()
