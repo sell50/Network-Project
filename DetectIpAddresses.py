@@ -11,10 +11,12 @@
 #             print('closed' +str(ip))
 
 import socket
-import time
 import threading
-
+import time
 from queue import Queue
+
+# DetectIpAddresses.py answers One-to-One Question 3. Detect all live IP addresses on a given subnet.
+# The job description contains the target subnet in a.b.c.d/x format.
 
 socket.setdefaulttimeout(0.25)
 print_lock = threading.Lock()
@@ -22,6 +24,7 @@ print_lock = threading.Lock()
 target = input('Enter the host to be scanned: ')
 t_IP = socket.gethostbyname(target)
 print('Starting scan on host: ', t_IP)
+
 
 # Function scans for open ports
 def portscan(port):
@@ -55,6 +58,5 @@ for worker in range(1, 500):
 
 q.join()
 print('Time taken:', time.time() - startTime)
-
 
 # findAllIP('192.168.1.0/24')
