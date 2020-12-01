@@ -4,7 +4,10 @@ import os
 #This program answers the first one-to-one job 
 class detectonlineip(object):
 
-    def detect(self, port):
+    def __init__(self):
+        print()
+
+    def detect(self, ipaddress):
 
         targetip = input('Enter the host to be scanned: ')
         targetaddress = socket.gethostbyname(targetip)
