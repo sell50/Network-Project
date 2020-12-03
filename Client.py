@@ -2,6 +2,7 @@ import pickle
 from UDPFloodAttack import *
 from TCPFloodAttack import *
 from DetectOnlineIP import *
+from DetectOpenPort import *
 
 '''
 After Client runs Job Specific Program (EX: UDP Flood Attack)
@@ -31,6 +32,7 @@ class Client(object):
         self.udpAttack = UDPFloodAttack()
         self.tcpAttack = TCPFloodAttack()
         self.detectIP = DetectOnlineIP()
+        self.detectPort = DetectOpenPort()
 
         # Needed Variables
         self.in_data = ''
@@ -81,7 +83,7 @@ class Client(object):
         elif in_data == "Subnet IP Online Detection":
             print("Job 2")
         elif in_data == "Specific Port Status Detection":
-            print("Job 3")
+            self.detectPort.checkPort(self.targetIP, self.targetPort)
         elif in_data == "All Port Status Detection":
             print("Job 4")
         elif in_data == "ICMP Flood Attack":
