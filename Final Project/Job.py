@@ -1,26 +1,18 @@
-
+import json
 class Job(object):
 
     def __init__(self, jobCreator, jobName, numOfSeekers, targetIP, targetPort):
-        """
-        Input: <String> <String> <String> <String> <String> 
-        Description: This Constructor creates a Job object with all the below 
-                    attributes which can be accessed by the Server
-        """
+
         self.JobCreator = jobCreator
         self.JobName = jobName
         self.NumOfSeekers = numOfSeekers
         self.targetIP = targetIP
         self.targetPort = targetPort
         self.jobParameters = [jobCreator, jobName, numOfSeekers, targetIP, targetPort]
-        self.FullJob = jobCreator+" "+jobName+" "+numOfSeekers+" "+targetIP+" "targetPort
+        self.FullJob = jobCreator+" "+" "+jobName+" "+" "+numOfSeekers
         self.JobSeekerList = []
 
     def __iter__(self):
-        """
-        Input: <null> 
-        Description: This function is used to iterate through the below attributes
-        """
         yield self.JobCreator
         yield self.JobName
         yield self.NumOfSeekers
@@ -28,10 +20,6 @@ class Job(object):
         yield self.targetPort
 
     def addSeekerList(self, SeekerName):
-        """
-        Input: <String> 
-        Description: This function will add the given input to a List of Job Seekers
-        """
         self.JobSeekerList.append(SeekerName)
 
     '''
@@ -73,3 +61,14 @@ class Job(object):
 
     def setJobSeekerList(self, JobSeekerList):
         self.JobSeekerList = JobSeekerList
+
+    def __str__(self):
+            d = dict()
+            d['CreatorNamed'] = self.JobCreator
+            d['JobType'] = self.JobName
+            d['NumofSeekers'] = self.NumOfSeekers
+            d['targetIP'] = self.targetIP
+            d['targetPort'] = self.targetPort
+            print(d)
+
+            return json.dump(d)
