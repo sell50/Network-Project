@@ -12,7 +12,7 @@ class FileRecord(object):
         outputFile.write(clientOutput+"\n")
         outputFile.close()
 
-    def updateJobListBackup(self, jobList, Job):
+    def updateJobListBackup(self, jobList):
         """
         Input: Job (String)
         Description: This function checks for 'JobBackup.txt', if not found
