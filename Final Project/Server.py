@@ -95,7 +95,9 @@ class Server(object):
         connection.send(pickle.dumps("Job has been created and added to the Job List"))
         self.jobListOBJ.updateJobList(parameterList[1], parameterList[2], parameterList[3], parameterList[4],
                                   parameterList[5])
-
+        
+        self.fileRecordOBJ.updateJobListBackup(self.jobListOBJ.listofjobs)
+            
     #COMPLETE
     def removeJob(self, connection, parameterList):
         for Job in self.jobListOBJ.listofjobs:
@@ -147,7 +149,7 @@ class Server(object):
                 Job.setNumOfSeekers("Job Started")
                 break
 
-    #NOT COMPLETE
+    #COMPLETE
     def completeJob(self, connection, parameterList):
         connection.send(pickle.dumps(parameterList[2]))
         connection.send(pickle.dumps(parameterList[3]))
@@ -158,9 +160,10 @@ class Server(object):
 
         # Receiving Message From Client
         clientCompletion = pickle.loads(clientOutput)
-
+        
+        #Recording Client Output
         self.fileRecordOBJ.recordOutput(clientCompletion)
-
+        
     #COMPLETE
     def commandRouting(self, connection, parameterList):
         if parameterList[0] == "LOGIN":
