@@ -2,13 +2,6 @@ from Job import *
 
 
 class JobList(object):
-    """
-    Final Project
-    -Code Logic: nearestSeekerLocationtoTarget()
-    -Code Logic: returnJobSeekerLanHosts()
-    -Code GUI or convert unto .exe
-    -(BONUS 5%) Resume From Crash Point
-    """
 
     '''
     Needed Variables
@@ -17,83 +10,6 @@ class JobList(object):
     '''
     listofjobs = []
 
-    '''
-    One-To-One Jobs
-    '''
-
-    def createIPOnlineDetectionJob(self, creatorName):
-
-        # Creating IP Online Detection Job
-        job = Job(creatorName, "IP Online Detection", '1')
-
-        # Adding IP Online Detection Job to Job List
-        self.listofjobs.append(job)
-
-    def createSubnetIPOnlineDetection(self, creatorName):
-
-        # Creating Subnet IP Online Detection Job
-        job = Job(creatorName, "Subnet IP Online Detection", '1')
-
-        # Adding Subnet IP Online Detection Job to Job List
-        self.listofjobs.append(job)
-
-    def specificPortStatusDetection(self, creatorName):
-
-        # Creating Specific Port Status Detection Job
-        job = Job(creatorName, "Specific Port Status Detection", '1')
-
-        # Adding Specific Port Status Detection Job to Job List
-        self.listofjobs.append(job)
-
-    def allPortStatusDetection(self, creatorName):
-
-        # Creating All Port Status Detection Job
-        job = Job(creatorName, "All Port Status Detection", '1')
-
-        # Adding All Port Status Detection Job to Job List
-        self.listofjobs.append(job)
-
-    '''
-    One-To-Many Jobs
-    '''
-
-    def createICMPFloodAttackJob(self, creatorName, numOfSeekers):
-
-        # Creating ICMP Flood Attack Job
-        job = Job(creatorName, "ICMP Flood Attack", numOfSeekers)
-
-        # Adding ICMP Flood Attack Job to Job List
-        self.listofjobs.append(job)
-
-    def createTCPFloodAttackJob(self, creatorName, numOfSeekers):
-
-        # Creating TCP Flood Attack Job
-        job = Job(creatorName, "TCP Flood Attack", numOfSeekers)
-
-        # Adding TCP Flood Attack Job to Job List
-        self.listofjobs.append(job)
-
-    def createUDPFloodAttackJob(self, creatorName, numOfSeekers):
-
-        # Creating UDP Flood Attack Job
-        job = Job(creatorName, "UDP Flood Attack", numOfSeekers)
-
-        # Adding UDP Flood Attack Job to Job List
-        self.listofjobs.append(job)
-
-    '''
-    Final Project Jobs
-    '''
-
-    def nearestSeekerLocationtoTarget(self):
-        print()
-
-    def returnJobSeekerLanHosts(self):
-        print()
-
-    '''
-    HELPER Functions
-    '''
 
     def updateJobList(self, creatorName, jobName, numofSeekers, targetIP, targetPort):
         """
@@ -170,4 +86,9 @@ class JobList(object):
         self.updateJobList(jobCreatorName, jobName, str(NumofSeekers))
 
     def updateJobSeekerList(self, jobSelection, SeekerName):
+        """
+        Input: <Integer> <String>
+        Description: Adds the given <String> to the Job at position 
+                    <Integer> in List of Jobs
+        """
         self.listofjobs[jobSelection].addSeekerList(SeekerName)
