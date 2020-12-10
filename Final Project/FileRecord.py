@@ -6,9 +6,9 @@ class FileRecord(object):
         outputFile.write(clientOutput)
         outputFile.close()
 
-    def updateJobListBackup(self):
-        print()
-
-    def readJobListBack(self):
-        print()
+    def updateJobListBackup(self, Job):
+        
+        jobBackup = open("JobBackup.txt", 'a+')
+        jobBackup.write(Job)
+        jobBackup.close()
 
