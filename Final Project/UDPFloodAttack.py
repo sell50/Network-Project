@@ -2,9 +2,6 @@ from scapy.all import *
 
 class UDPFloodAttack(object):
 
-    def __init__(self):
-        print()
-
     '''
     Name: Send UDP Packets Function
     Type: void

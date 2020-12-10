@@ -4,6 +4,7 @@ from _thread import *
 from JobList import *
 from JobCreator import *
 from JobSeeker import *
+from FileRecord import *
 
 class Server(object):
 
@@ -31,6 +32,7 @@ class Server(object):
         self.port = 1233
         self.ThreadCount = 0
         self.jobListOBJ = JobList()
+        self.fileRecordOBJ = FileRecord()
         self.jobCreatorList = []
         self.jobSeekerList = []
         self.command = ""
@@ -150,6 +152,14 @@ class Server(object):
         connection.send(pickle.dumps(parameterList[2]))
         connection.send(pickle.dumps(parameterList[3]))
         connection.send(pickle.dumps(parameterList[4]))
+
+        # Limiting to 2048 Bytes
+        clientOutput = connection.recv(2048)
+
+        # Receiving Message From Client
+        clientCompletion = pickle.loads(clientOutput)
+
+        self.fileRecordOBJ.recordOutput(clientCompletion)
 
     #COMPLETE
     def commandRouting(self, connection, parameterList):

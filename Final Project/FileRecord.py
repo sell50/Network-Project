@@ -1,17 +1,14 @@
 class FileRecord(object):
-  
-  def __init__(self):
-  
-  
-  def recordOutput(self):
-    try:
-      outputFile = open("ClientOutput.txt")
-    except IOError:
-    
-    finally:
-  
-  def updateJobListBackup(self):
-  
-  
-  def readJobListBack(self):
-  
+
+    def recordOutput(self, clientOutput):
+
+        outputFile = open("ClientOutput.txt", 'a+')
+        outputFile.write(clientOutput)
+        outputFile.close()
+
+    def updateJobListBackup(self):
+        print()
+
+    def readJobListBack(self):
+        print()
+

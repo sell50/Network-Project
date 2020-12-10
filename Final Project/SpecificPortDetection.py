@@ -2,10 +2,6 @@ import socket
 
 class SpecificPortDetection(object):
 
-    def __init__(self):
-        print()
-
-
     def checkPort(self, targetIP, targetPort):
         checkerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -13,8 +9,8 @@ class SpecificPortDetection(object):
         portStatus = checkerSocket.connect_ex(targetLocation)
 
         if portStatus == 0:
-            print("Port: OPEN")
+            return "Target IP Address: "+targetIP +" Target Port: "+ str(targetPort) +": "+ " Open\n"
         else:
-            print("Port: CLOSED")
+            return "Target IP Address: "+targetIP +" Target Port: "+ str(targetPort) +": "+ " Closed\n"
 
         checkerSocket.close()

@@ -2,9 +2,6 @@ from scapy.all import *
 
 class TCPFloodAttack(object):
 
-    def __init__(self):
-        print()
-
     '''
     Name: Send TCP Packets Function
     Type: void
