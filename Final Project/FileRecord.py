@@ -9,10 +9,10 @@ class FileRecord(object):
                     file gets saved
         """
         outputFile = open("ClientOutput.txt", 'a+')
-        outputFile.write(clientOutput)
+        outputFile.write(clientOutput+"\n")
         outputFile.close()
 
-    def updateJobListBackup(self, Job):
+    def updateJobListBackup(self, jobList, Job):
         """
         Input: Job (String)
         Description: This function checks for 'JobBackup.txt', if not found
@@ -20,7 +20,10 @@ class FileRecord(object):
                     After all is done, the stream to the file is closed ensuring the 
                     file gets saved
         """
-        jobBackup = open("JobBackup.txt", 'a+')
-        jobBackup.write(Job)
+        jobBackup = open("JobBackup.txt", 'w')
+        
+        for Jobs in jobList:
+            jobBackup.write(Jobs.FullJob+"\n")
+        
         jobBackup.close()
 
