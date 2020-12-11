@@ -3,11 +3,11 @@ from Job import *
 
 class JobList(object):
 
-    '''
+    """
     Needed Variables
     listofjobs: This list holds jobs that are created from the Client and will store all the information of the Jobs
     jobsToRequest: This is a static list which is used to hold the names of the types of jobs offered
-    '''
+    """
     listofjobs = []
 
 
@@ -88,7 +88,7 @@ class JobList(object):
     def updateJobSeekerList(self, jobSelection, SeekerName):
         """
         Input: <Integer> <String>
-        Description: Adds the given <String> to the Job at position 
+        Description: Adds the given <String> to the Job at position
                     <Integer> in List of Jobs
         """
         self.listofjobs[jobSelection].addSeekerList(SeekerName)

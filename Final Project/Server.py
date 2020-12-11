@@ -6,8 +6,8 @@ from JobCreator import *
 from JobSeeker import *
 from FileRecord import *
 
-class Server(object):
 
+class Server(object):
     #Message Variables:
     initialConnectionMessage = ["LOGIN <USERNAME> <PASSWORD> <POSITION>", "POSITION SELECTION: ", "<JobCreator>",
                                 "<JobSeeker>"]
@@ -25,7 +25,6 @@ class Server(object):
                                "JOINJOB <CREATORNAME> <JOBTYPE> <SEEKERNAME>",
                                "COMPLETEJOB <CREATORNAME> <JOBTYPE> <TARGETIP> <TARGETPORT>"]
 
-
     def __init__(self):
         self.ServerSocket = socket.socket()
         self.host = '127.0.0.1'
@@ -37,6 +36,7 @@ class Server(object):
         self.jobSeekerList = []
         self.command = ""
         self.parameterList = []
+        self.readBackup()
 
         # Bind socket to port
         try:
@@ -94,10 +94,10 @@ class Server(object):
     def createJob(self, connection, parameterList):
         connection.send(pickle.dumps("Job has been created and added to the Job List"))
         self.jobListOBJ.updateJobList(parameterList[1], parameterList[2], parameterList[3], parameterList[4],
-                                  parameterList[5])
-        
+                                      parameterList[5])
+
         self.fileRecordOBJ.updateJobListBackup(self.jobListOBJ.listofjobs)
-            
+
     #COMPLETE
     def removeJob(self, connection, parameterList):
         for Job in self.jobListOBJ.listofjobs:
@@ -118,9 +118,10 @@ class Server(object):
     def joinJob(self, connection, parameterList):
         count = 0
         for Job in self.jobListOBJ.listofjobs:
-            count+=1
+            count += 1
 
-            if Job.jobParameters[0] == parameterList[1] and Job.jobParameters[1] == parameterList[2] and Job.NumOfSeekers == "Job Started":
+            if Job.jobParameters[0] == parameterList[1] and Job.jobParameters[1] == parameterList[
+                2] and Job.NumOfSeekers == "Job Started":
                 connection.send(pickle.dumps("Job is full"))
                 break
 
@@ -128,8 +129,9 @@ class Server(object):
                 connection.send(pickle.dumps("Entered Job Does Not Exist In Job List"))
                 break
 
-            if Job.jobParameters[0] == parameterList[1] and Job.jobParameters[1] == parameterList[2] and int(Job.NumOfSeekers) != 0:
-                connection.send(pickle.dumps(parameterList[3]+" has joined: " + Job.FullJob))
+            if Job.jobParameters[0] == parameterList[1] and Job.jobParameters[1] == parameterList[2] and int(
+                    Job.NumOfSeekers) != 0:
+                connection.send(pickle.dumps(parameterList[3] + " has joined: " + Job.FullJob))
                 Job.JobSeekerList.append(parameterList[3])
                 Job.NumOfSeekers = int(Job.NumOfSeekers) - 1
                 Job.NumOfSeekers = str(Job.NumOfSeekers)
@@ -139,13 +141,13 @@ class Server(object):
     def startJob(self, connection, parameterList):
         count = 0
         for Job in self.jobListOBJ.listofjobs:
-            count+=1
+            count += 1
             if count > len(self.jobListOBJ.listofjobs):
                 connection.send(pickle.dumps("Entered Job Does Not Exist In Job List"))
                 break
 
             if Job.jobParameters[0] == parameterList[1] and Job.jobParameters[1] == parameterList[2]:
-                connection.send(pickle.dumps(Job.FullJob+" has been started"))
+                connection.send(pickle.dumps(Job.FullJob + " has been started"))
                 Job.setNumOfSeekers("Job Started")
                 break
 
@@ -160,10 +162,10 @@ class Server(object):
 
         # Receiving Message From Client
         clientCompletion = pickle.loads(clientOutput)
-        
-        #Recording Client Output
+
+        # Recording Client Output
         self.fileRecordOBJ.recordOutput(clientCompletion)
-        
+
     #COMPLETE
     def commandRouting(self, connection, parameterList):
         if parameterList[0] == "LOGIN":
@@ -184,6 +186,21 @@ class Server(object):
             self.completeJob(connection, parameterList)
         else:
             connection.send(pickle.dumps("Invalid Command"))
+
+    #Not Complete
+    def readBackup(self):
+        try:
+            backup = open("JobBackup.txt", 'r')
+            backupList = backup.readlines()
+
+            for lines in backupList:
+                self.ParseCommand(lines)
+                self.jobListOBJ.updateJobList(self.parameterList[0], self.parameterList[1], self.parameterList[2],
+                                              self.parameterList[3], self.parameterList[4])
+            print("Jobs Have Been Restored")
+        except IOError:
+            pass
+
 
 if __name__ == "__main__":
     s = Server()
