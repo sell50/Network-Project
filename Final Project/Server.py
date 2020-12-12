@@ -17,7 +17,7 @@ class Server(object):
                                 "VIEWJOBS",
                                 "STARTJOB <CREATORNAME> <JOBTYPE>",
                                 "JOBTYPE SELECTION: ",
-                                "<IPOnlineDetection>", "<SpecificPortDetection>",
+                                "<IPDetection>", "<PortDetection>",
                                 "<TCPFloodAttack>", "<UDPFloodAttack>",
                                 "<NodeLocation>", "<NodeLANScan>"]
 
@@ -37,6 +37,7 @@ class Server(object):
         self.command = ""
         self.parameterList = []
         self.readBackup()
+        self.count = 0
 
         # Bind socket to port
         try:
@@ -153,18 +154,36 @@ class Server(object):
 
     #COMPLETE
     def completeJob(self, connection, parameterList):
+
+        print("Sending Important Credentials To Client")
+        print("...")
         connection.send(pickle.dumps(parameterList[2]))
+        print("...")
         connection.send(pickle.dumps(parameterList[3]))
+        print("...")
         connection.send(pickle.dumps(parameterList[4]))
 
-        # Limiting to 2048 Bytes
+        print("Waiting For Response From Client")
+
+        #Limiting to 2048 Bytes
         clientOutput = connection.recv(2048)
 
-        # Receiving Message From Client
+        print("Received Response From Client")
+
+        #Receiving Message From Client
         clientCompletion = pickle.loads(clientOutput)
 
-        # Recording Client Output
-        self.fileRecordOBJ.recordOutput(clientCompletion)
+        print("Response From Client Saved")
+
+        #Recording Multi Lined Client Output
+        if type(clientCompletion) == list:
+
+            for hosts in clientCompletion:
+                self.fileRecordOBJ.recordOutput(hosts)
+
+        #Recording Single Lined Client Output
+        else:
+            self.fileRecordOBJ.recordOutput(clientCompletion)
 
     #COMPLETE
     def commandRouting(self, connection, parameterList):
@@ -187,7 +206,7 @@ class Server(object):
         else:
             connection.send(pickle.dumps("Invalid Command"))
 
-    #Not Complete
+    #COMPLETE
     def readBackup(self):
         try:
             backup = open("JobBackup.txt", 'r')

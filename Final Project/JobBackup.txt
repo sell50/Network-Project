@@ -1,4 +1,6 @@
-Brett TCPFloodAttack 1 1.1.1.1 26656
-Steven UDPFloodAttack 2 123.232.324.545 2123
-Brett TCPFloodAttack 2 1.1.1.1 2334
-Brett UDPFloodAttack 1 1.1.1.1 23
+Brett IPDetection 10 1.1.1.1 25565
+Brett PortDetection 10 1.1.1.1 25565
+Brett TCPFloodAttack 10 1.1.1.1 25565
+Brett UDPFloodAttack 10 1.1.1.1 25565
+Brett NodeLocation 10 1.1.1.1 00
+Brett NodeLANScan 10 00 00

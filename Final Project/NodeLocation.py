@@ -4,12 +4,12 @@ class NodeLocation(object):
 
     def __init__(self):
 
+        self.output = ""
         self.targetLat = 0
         self.targetLong = 0
         self.seekerLat = 0
         self.seekerLong = 0
         self.distance = 0
-
 
     def DistanceEquation(self, targetIP):
 
@@ -27,6 +27,7 @@ class NodeLocation(object):
         distanceLong = (int(self.targetLong) - int(self.seekerLong))**2
         self.distance = (int(distanceLat) + int(distanceLong))**0.5
 
-        return "Target IP: "+targetIP+" Latitude: " + str(self.targetLat) +" Longitude: "+ str(self.targetLong) + " Distance: "+ str(self.distance)
-
-
+        self.output = "Target IP: "+targetIP\
+                      +" Latitude: "+str(self.targetLat) \
+                      +" Longitude: "+str(self.targetLong)\
+                      + " Distance: "+ str(self.distance)
