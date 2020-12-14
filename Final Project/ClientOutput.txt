@@ -1,0 +1,14 @@
+Target IP: 1.1.1.1 Online
+Target IP Address: 1.1.1.1 Target Port: 25565:  Closed
+Target IP: 1.1.1.1 Target Port: 25565 TCP Flood Attack
+Target IP: 1.1.1.1 Target Port: 25565 UDP Flood Attack
+Target IP: 1.1.1.1 Latitude: -33.8548157 Longitude: 151.2164539 Distance: 245.72545655670274
+IP Address: 192.168.86.1	MAC Address: ec:08:6b:ea:fc:e9
+IP Address: 192.168.86.36	MAC Address: f8:94:c2:d1:57:86
+IP Address: 192.168.86.25	MAC Address: d0:23:db:1f:27:8c
+IP Address: 192.168.86.33	MAC Address: f6:6a:72:d8:dd:c5
+IP Address: 192.168.86.37	MAC Address: 7c:b0:c2:b3:ad:f8
+IP Address: 192.168.86.24	MAC Address: de:c8:03:7d:2c:5c
+IP Address: 192.168.86.22	MAC Address: 04:e5:36:ca:9c:4c
+IP Address: 192.168.86.47	MAC Address: d4:e6:b7:a5:93:d9
+IP Address: 192.168.86.46	MAC Address: a6:5b:79:c1:d6:79
