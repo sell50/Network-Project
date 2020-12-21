@@ -1,12 +1,16 @@
 import pickle
 import socket
-import time
 from _thread import *
 from JobList import *
 from JobCreator import *
 from JobSeeker import *
 from FileRecord import *
-
+import sys
+try:
+    from ip2geotools.databases.noncommercial import DbIpCity
+except ImportError:
+    print("Need to install ip2geotools to continue")
+    sys.exit(0)
 
 class Server(object):
 
@@ -40,6 +44,7 @@ class Server(object):
         self.parameterList = []
         self.readBackup()
         self.count = 0
+
 
         # Bind socket to port
         try:
@@ -115,7 +120,10 @@ class Server(object):
         if len(self.jobListOBJ.listofjobs) == 0:
             connection.send(pickle.dumps("No Jobs Posted"))
         else:
-            connection.send(pickle.dumps(self.jobListOBJ.listofjobs))
+            try:
+                connection.send(pickle.dumps(self.jobListOBJ.listofjobs))
+            except EOFError:
+                pass
 
     #COMPLETE
     def joinJob(self, connection, parameterList):
@@ -163,8 +171,6 @@ class Server(object):
         connection.send(pickle.dumps(parameterList[3]))
         print("Sending Target Port To Client (If Needed)")
         connection.send(pickle.dumps(parameterList[4]))
-
-        #time.sleep(10)
 
         print("Waiting For Response From Client")
 
